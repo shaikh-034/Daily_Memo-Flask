@@ -1,5 +1,5 @@
 from urllib import request
-from flask import Flask, render_template, request, redirect
+from flask import Flask, render_template, request, redirect, flash
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 # from app import db
@@ -24,9 +24,12 @@ def hello_world():
     if request.method == 'POST':
         title = request.form['title']
         descr = request.form['descr']
-        memo = Memo(title=title, descr=descr)
-        db.session.add(memo)
-        db.session.commit()
+        if len(title) == 0 or len(descr)== 0:
+            return redirect('/')
+        else:    
+            memo = Memo(title=title, descr=descr)
+            db.session.add(memo)
+            db.session.commit()
     allmemo = Memo.query.all()
     return render_template('index.html', allmemo=allmemo)
 
@@ -60,4 +63,4 @@ def delete(sno):
     return redirect('/')
 
 if __name__ == "__main__":
-    app.run(debug=True, port=8000)
+    app.run(debug=True, port=5000)
